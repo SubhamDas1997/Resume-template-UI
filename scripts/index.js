@@ -5,7 +5,17 @@ const btnEle = document.querySelector('.submit');
 localStorage.setItem('username', 'subhamDas');
 localStorage.setItem('password', '123456789');
 
-btnEle.addEventListener("click", function() {
+usernameEle.addEventListener("keypress", login)
+passwordEle.addEventListener("keypress", login)
+btnEle.addEventListener("click", showStatus);
+disableBackFunction();
+
+function validateFields(userEntry, storedValue) {
+    if (userEntry === storedValue)
+        return 1;
+}
+
+function showStatus() {
     let correctUsername = validateFields(username.value, localStorage.getItem('username'));
     let correctPassword = validateFields(password.value, localStorage.getItem('password'));
 
@@ -13,13 +23,10 @@ btnEle.addEventListener("click", function() {
         window.location.href = 'resume.html';
     else
         alert('Invalid username/password.');
-});
+}
 
-disableBackFunction();
-
-function validateFields(userEntry, storedValue) {
-    if (userEntry === storedValue)
-        return 1;
+function login(e) {
+    if (e.keyCode == 13) showStatus();
 }
 
 function disableBackFunction() {
