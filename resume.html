@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Viewer</title>
+    <link rel="stylesheet" href="./styles/resume-style.css">
+    <script src="./scripts/resume-script.js" defer></script>
+    <script src="https://kit.fontawesome.com/f36ca567df.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="outer-wrapper">
+        <div class="search-area">
+            <input type="text" class="search" placeholder="Search for keywords to filter resumes">
+            <span>|</span>
+            <div class="resume-navigation">
+                <button class="button" id="previous">Previous</button>
+                <button class="button" id="next">Next</button>
+            </div>
+        </div>
+        <div class="resume-heading">
+            <div class="icon">
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </div>
+            <div class="inner-wrapper">
+                <h1 id="app-name">Jon Doe</h1>
+                <p id="app-for">Applied For: Software Engineer</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="resume-left-column">
+                <div class="personal-info">
+                    <h3>Personal Information</h3>
+                    <p class="content" id="phone-no">9999999999</p>
+                    <p class="content" id="email">john@gmail.com</p>
+                    <div class="content">
+                        <a href="https://linkedin.com/john" id="social-link">LinkedIn</a>
+                    </div>
+                </div>
+                <br>    
+                <div class="tech-skills">
+                    <h3>Technical Skills</h3>
+                    <ul id="skill">
+                        <li class="content">HTML</li>
+                        <li class="content">CSS</li>
+                        <li class="content">Javascript</li>
+                    </ul>
+                </div>
+                <br>
+                <div class="hobbies">
+                    <h3>Hobbies</h3>
+                    <ul id="hobby">
+                        <li class="content hobby">Wildlife</li>
+                        <li class="content hobby">Dance</li>
+                        <li class="content hobby">Workout</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="resume-right-column">
+                <div class="work-experience wrapper">
+                    <h2>Work Experience in previous company</h2>
+                    <p class="content" id="company-name"><strong>Company Name:</strong> Harman</strong></p>
+                    <p class="content" id="position"><strong>Position:</strong> Associate Engineer</p>
+                    <p class="content" id="start-date"><strong>Start Date:</strong> 2013-01-01</p>
+                    <p class="content" id="end-date"><strong>End Date:</strong> 2014-01-01</p>
+                    <p class="content" id="summary"><strong>Summary:</strong> Paragraphs are the building blocks of papers. Many students define paragraphs in terms of length: a paragraph is a group of at least five sentences, a paragraph is half a page long, etc. In reality, though, the unity and coherence of ideas among sentences is what constitutes a paragraph. A paragraph is defined as “a group of sentences or a single sentence that forms a unit” (Lunsford and Connors 116). Length and appearance do not determine whether a section in a paper is a paragraph.</p>
+                </div>
+                <div class="projects wrapper">
+                    <h2>Projects</h2>
+                    <p class="content" id="project"><strong>E-Commerce Website:</strong> I have created a ecommerce website using html,css,and react with javascripts, Porject has functionality where user can select any item of their choice and store it into a cart or they add item into their whishlist, seraching functionality allow user to search any product by name .</p>
+                </div>
+                <div class="education wrapper">
+                    <h2>Education</h2>
+                    <ul class="bullet">
+                        <li id="ug"><strong>UG:</strong> Institute, Course, start-date, end-date, cgpa</li>
+                        <li id="pu"><strong>PU:</strong> Institute, cgpa</li>
+                        <li id="high-school"><strong>High School:</strong> Institute, cgpa</li>
+                    </ul>
+                </div>
+                <div class="internship wrapper">
+                    <h2>Internship</h2>
+                    <ul class="bullet">
+                        <li id="intern-name"><strong>Company Name:</strong> IBM</li>
+                        <li id="intern-position"><strong>Position:</strong> Intern</li>
+                        <li id="intern-tart"><strong>Start Date:</strong> 2013-01-01</li>
+                        <li id="intern-end"><strong>End Date:</strong> 2014-01-01</li>
+                        <li id="intern-summary"><strong>Summary:</strong> Learned about Tools used for website testing such as Deep Trawl, NVDA, web developer extension, OpenVAS,Learned about the importance and concept of OWASP.Learned React JS and worked for Frontend development with professional.</li>
+                    </ul>
+                </div>
+                <div class="achievements wrapper">
+                    <h2>Achievements</h2>
+                    <ul class="bullet">
+                        <li>Best employee of the year 2021</li>
+                        <li>Increased revenue or sales for the company in 2019</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
