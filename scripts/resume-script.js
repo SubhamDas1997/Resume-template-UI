@@ -1,3 +1,4 @@
+// Querying all the required HTML elements
 const searchEle = document.querySelector('#search');
 const appNameELe = document.getElementById('app-name');
 const appForEle = document.getElementById('app-for');
@@ -22,6 +23,7 @@ const internStartEle = document.getElementById('intern-start');
 const internEndEle = document.getElementById('intern-end');
 const internSummaryEle = document.getElementById('intern-summary');
 const achievementEle = document.getElementById('achievement');
+const pipeEle = document.querySelector('.search-area span');
 const previousBtnEle = document.getElementById('previous');
 const nextBtnEle = document.getElementById('next');
 const currentPageEle = document.getElementById('current-page');
@@ -32,19 +34,20 @@ const noResultEle = document.querySelector('.no-result');
 
 fetchResumes();
 
+// Fetching the resumes from the JSON file
 function fetchResumes() {
     fetch("./data/Data.json")
         .then((response) => response.json())
         .then((resumesList) => filterResumes(resumesList));
 }
 
+// Filtering resumes based on job role comparing with user input
 function filterResumes(resumesList) {
     let tempArraywithDup = resumesList.resume.map(element => element.basics.AppliedFor);
     let jobsArray = [...new Set(tempArraywithDup)];
     const isEmpty = str => !str.trim().length;
     
-    // console.log(isEmpty(searchEle.value))
-    if(isEmpty(searchEle.value)) showResume(resumesList.resume);
+    if(isEmpty(searchEle.value)) selectResume(resumesList.resume);
 
     searchEle.addEventListener("input", function() {
         let filteredArray = [];
@@ -53,98 +56,93 @@ function filterResumes(resumesList) {
 
         for(let i = 0; i < jobsArray.length; i++) {
             let isInputPresent = jobsArray[i].toLowerCase().includes(userInp);
-            // console.log(isInputPresent)
 
             if(isInputPresent) {
-                // console.log(jobsArray[i])
                 filteredArray = resumesList.resume.filter( element => {
                     return element.basics.AppliedFor == jobsArray[i];
                 });
-                // console.log(filteredArray)
+
                 arrToSend = arrToSend.concat(filteredArray);
             }
         }
-        // console.log('Final array =')
-        // console.log(arrToSend)
 
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';
         achievementEle.innerHTML = '';
 
-        // showResume(arrToSend);
+        // selectResume(arrToSend);
         
-        if(arrToSend.length != 0) {
-            showResume(arrToSend);
-        } else {
+        if (arrToSend.length != 0) selectResume(arrToSend);
+        else {
             noResultEle.style.display = "flex";
             resumeheadingEle.style.visibility = "hidden";
             containerEle.style.visibility = "hidden";
-            
+            pipeEle.style.visibility = "hidden";
+            previousBtnEle.style.visibility = "hidden";
+            nextBtnEle.style.visibility = "hidden";
+
             currentPageEle.innerHTML = 0;
             totalPagesEle.innerHTML = 0;
         }
     });
 }
 
-function showResume(resumeArray) {
-    // console.log(resumeArray)
+// Selecting a particular resume from the filtered resumes
+function selectResume(resumeArray) {
     let firstResume = 0;
-    // console.log(`first = ${firstResume}`)
-
     let lastResume = resumeArray.length - 1;
-    // console.log(`total = ${lastResume}`)
-    
     let currentResume = 0;
-    // console.log(`current = ${currentResume}`)
 
     noResultEle.style.display = "none";
     resumeheadingEle.style.visibility = "visible";
     containerEle.style.visibility = "visible";
-
+    pipeEle.style.visibility = "visible";
     previousBtnEle.style.visibility = "hidden";
-    if(firstResume == lastResume) {
-        nextBtnEle.style.visibility = "hidden";
-    }
+    nextBtnEle.style.visibility = "visible";
     
     currentPageEle.innerHTML = currentResume + 1;
     totalPagesEle.innerHTML = lastResume + 1;
 
-    updatePage(resumeArray, currentResume);
+    updateDetails(resumeArray, currentResume);
 
     nextBtnEle.addEventListener("click", function() {
         currentResume++;
-        // console.log(`current = ${currentResume}`)
 
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';
         achievementEle.innerHTML = '';
-        if(currentResume > lastResume) currentResume = lastResume;
+
         if(currentResume == lastResume) nextBtnEle.style.visibility = "hidden";
-        if(currentResume > firstResume) previousBtnEle.style.visibility = "visible";
+        previousBtnEle.style.visibility = "visible";
+
         currentPageEle.innerHTML = currentResume + 1;
-        updatePage(resumeArray, currentResume);
+        
+        updateDetails(resumeArray, currentResume);
     });
 
     previousBtnEle.addEventListener("click", function() {
         currentResume--;
-        // console.log(`current = ${currentResume}`)
 
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';
         achievementEle.innerHTML = '';
-        if(currentResume < firstResume) currentResume = firstResume;
+
         if(currentResume == firstResume) previousBtnEle.style.visibility = "hidden";
-        if(currentResume < lastResume) nextBtnEle.style.visibility = "visible";
+        nextBtnEle.style.visibility = "visible";
+
         currentPageEle.innerHTML = currentResume + 1;
-        updatePage(resumeArray, currentResume);
+        
+        updateDetails(resumeArray, currentResume);
     });
 }
 
-function updatePage(resumesArray, resumeNo) {
+// Displaying the details of a particular resume on the page
+function updateDetails(resumesArray, resumeNo) {
     appNameELe.innerHTML = resumesArray[resumeNo].basics.name;
 
     appForEle.innerHTML = `Applied For: ${resumesArray[resumeNo].basics.AppliedFor}`;
 
+    // Replace default image if present in the JSON file
     // imgELe.innerHTML = `<img src="${resumesArray[resumeNo].basics.image}" alt="Loading...">`
 
     phoneEle.innerHTML = resumesArray[resumeNo].basics.phone;
