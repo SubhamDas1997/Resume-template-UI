@@ -28,6 +28,9 @@ const currentPageEle = document.getElementById('current-page');
 const totalPagesEle = document.getElementById('total-pages');
 const resumeheadingEle = document.querySelector('.resume-heading');
 const containerEle = document.querySelector('.container');
+const noResultEle = document.querySelector('.no-result');
+
+fetchResumes();
 
 function fetchResumes() {
     fetch("./data/Data.json")
@@ -35,17 +38,17 @@ function fetchResumes() {
         .then((resumesList) => filterResumes(resumesList));
 }
 
-fetchResumes();
-
 function filterResumes(resumesList) {
     let tempArraywithDup = resumesList.resume.map(element => element.basics.AppliedFor);
     let jobsArray = [...new Set(tempArraywithDup)];
-
-    showResume(resumesList.resume);
+    const isEmpty = str => !str.trim().length;
+    
+    // console.log(isEmpty(searchEle.value))
+    if(isEmpty(searchEle.value)) showResume(resumesList.resume);
 
     searchEle.addEventListener("input", function() {
         let filteredArray = [];
-        let arrToSend = [];
+        let arrToSend = []; 
         let userInp = this.value.toLowerCase();
 
         for(let i = 0; i < jobsArray.length; i++) {
@@ -54,11 +57,11 @@ function filterResumes(resumesList) {
 
             if(isInputPresent) {
                 // console.log(jobsArray[i])
-                filteredArray.resume = resumesList.resume.filter( element => {
-                    return element.basics.AppliedFor == jobsArray[i]
+                filteredArray = resumesList.resume.filter( element => {
+                    return element.basics.AppliedFor == jobsArray[i];
                 });
                 // console.log(filteredArray)
-                arrToSend = arrToSend.concat(filteredArray.resume);
+                arrToSend = arrToSend.concat(filteredArray);
             }
         }
         // console.log('Final array =')
@@ -67,20 +70,37 @@ function filterResumes(resumesList) {
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';
         achievementEle.innerHTML = '';
-        showResume(arrToSend);
+
+        // showResume(arrToSend);
+        
+        if(arrToSend.length != 0) {
+            showResume(arrToSend);
+        } else {
+            noResultEle.style.display = "flex";
+            resumeheadingEle.style.visibility = "hidden";
+            containerEle.style.visibility = "hidden";
+            
+            currentPageEle.innerHTML = 0;
+            totalPagesEle.innerHTML = 0;
+        }
     });
 }
 
 function showResume(resumeArray) {
-    console.log(resumeArray)
+    // console.log(resumeArray)
     let firstResume = 0;
+    // console.log(`first = ${firstResume}`)
+
     let lastResume = resumeArray.length - 1;
     // console.log(`total = ${lastResume}`)
     
     let currentResume = 0;
     // console.log(`current = ${currentResume}`)
 
-    
+    noResultEle.style.display = "none";
+    resumeheadingEle.style.visibility = "visible";
+    containerEle.style.visibility = "visible";
+
     previousBtnEle.style.visibility = "hidden";
     if(firstResume == lastResume) {
         nextBtnEle.style.visibility = "hidden";
@@ -98,7 +118,7 @@ function showResume(resumeArray) {
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';
         achievementEle.innerHTML = '';
-        if(currentResume > lastResume) currentResume = lastResume; 
+        if(currentResume > lastResume) currentResume = lastResume;
         if(currentResume == lastResume) nextBtnEle.style.visibility = "hidden";
         if(currentResume > firstResume) previousBtnEle.style.visibility = "visible";
         currentPageEle.innerHTML = currentResume + 1;
@@ -107,7 +127,7 @@ function showResume(resumeArray) {
 
     previousBtnEle.addEventListener("click", function() {
         currentResume--;
-        console.log(`current = ${currentResume}`)
+        // console.log(`current = ${currentResume}`)
 
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';

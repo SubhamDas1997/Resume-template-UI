@@ -56,6 +56,30 @@ body {
     color: red;
 }
 
+.outer-wrapper .no-result {
+    display: flex;
+    background: wheat;
+    padding: 100px;
+    width: 100%;
+    margin-bottom: 20px;
+    max-width: 80vw;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    column-gap: 50px;
+}
+
+.outer-wrapper .no-result i {
+    font-size: 140px;
+    font-weight: bold;
+}
+
+.outer-wrapper .no-result span {
+    font-size: 60px;
+    font-weight: bold;
+}
+
 .resume-heading {
     display: flex;
     background: greenyellow;
@@ -188,6 +212,20 @@ body {
 
     .outer-wrapper .counter {
         font-size: 15px;
+    }
+
+    .outer-wrapper .no-result {
+        padding: 40px 20px;
+        flex-direction: column;
+        row-gap: 30px;
+    }
+
+    .outer-wrapper .no-result i {
+        font-size: 80px;
+    }
+
+    .outer-wrapper .no-result span {
+        font-size: 30px;
     }
     
     .container {
