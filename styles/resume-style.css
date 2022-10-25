@@ -108,11 +108,8 @@ body {
 }
 
 .resume-heading .icon {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size: 85px;
     position: absolute;
+    font-size: 85px;
     right: 5%;
 }
 
@@ -228,6 +225,10 @@ body {
         font-size: 30px;
     }
     
+    .resume-heading .icon {
+        display: none;
+    }
+
     .container {
         display: block;
     }
