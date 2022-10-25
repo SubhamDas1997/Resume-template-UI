@@ -34,47 +34,101 @@ const noResultEle = document.querySelector('.no-result');
 
 fetchResumes();
 
-// Fetching the resumes from the JSON file
+// Fetching the resumes array from the JSON file
 function fetchResumes() {
     fetch("./data/Data.json")
         .then((response) => response.json())
-        .then((resumesList) => filterResumes(resumesList));
+        .then((resumesList) => loadPage(resumesList.resume));
 }
 
-// Filtering resumes based on job role comparing with user input
-function filterResumes(resumesList) {
-    let tempArraywithDup = resumesList.resume.map(element => element.basics.AppliedFor);
-    let jobsArray = [...new Set(tempArraywithDup)];
-    const isEmpty = str => !str.trim().length;
-    
-    if(isEmpty(searchEle.value)) selectResume(resumesList.resume);
+// Passing the promise result and loading the page with resume
+function loadPage(resumeArray) {
+    searchEle.addEventListener("input", filter);
+    previousBtnEle.addEventListener("click", previousPage);
+    nextBtnEle.addEventListener("click", nextPage);
 
-    searchEle.addEventListener("input", function() {
-        let filteredArray = [];
-        let arrToSend = []; 
-        let userInp = this.value.toLowerCase();
+    let currentPage = 1;
+    let totalPages = resumeArray.length;
+    let filteredResumes = resumeArray;
 
-        for(let i = 0; i < jobsArray.length; i++) {
-            let isInputPresent = jobsArray[i].toLowerCase().includes(userInp);
+    if(currentPage == 1) previousBtnEle.style.visibility = "hidden";
 
-            if(isInputPresent) {
-                filteredArray = resumesList.resume.filter( element => {
-                    return element.basics.AppliedFor == jobsArray[i];
-                });
+    if(currentPage == totalPages) nextBtnEle.style.visibility = "hidden";
 
-                arrToSend = arrToSend.concat(filteredArray);
-            }
+    currentPageEle.innerHTML = currentPage;
+    totalPagesEle.innerHTML = totalPages;
+
+    renderResume(filteredResumes, currentPage);
+
+    // Filtering resumes based on job role comparing with user input
+    function filter() {
+        keyword = searchEle.value;
+
+        filteredResumes = resumeArray.filter( element =>
+            element.basics.AppliedFor.toLowerCase().includes(keyword.toLowerCase())    
+        );
+
+        currentPage = 1;
+        totalPages = filteredResumes.length;
+
+        if(currentPage == 1) {
+            previousBtnEle.style.visibility = "hidden";
+            nextBtnEle.style.visibility = "visible";
         }
+
+        if(currentPage == totalPages) nextBtnEle.style.visibility = "hidden";
 
         skillEle.innerHTML = '';
         hobbyEle.innerHTML = '';
         achievementEle.innerHTML = '';
 
-        // selectResume(arrToSend);
+        currentPageEle.innerHTML = currentPage;
+        totalPagesEle.innerHTML = totalPages;
+
+        renderResume(filteredResumes, currentPage);
+    }
+
+    // Loading next resume on click of 'NEXT' button.
+    function nextPage() {
+        if(currentPage < totalPages) {
+            currentPage++;
+            previousBtnEle.style.visibility = "visible";
+        }
+
+        if(currentPage == totalPages) nextBtnEle.style.visibility = "hidden";
+
+        skillEle.innerHTML = '';
+        hobbyEle.innerHTML = '';
+        achievementEle.innerHTML = '';
+
+        currentPageEle.innerHTML = currentPage;
+
+        renderResume(filteredResumes, currentPage);
+    }
+
+    // Loading previous resume on click of 'PREVIOUS' button.
+    function previousPage() {
+        if(currentPage <= totalPages) {
+            currentPage--;
+            nextBtnEle.style.visibility = "visible";
+        } 
         
-        if (arrToSend.length != 0) selectResume(arrToSend);
-        else {
+        if(currentPage == 1) previousBtnEle.style.visibility = "hidden";
+
+        skillEle.innerHTML = '';
+        hobbyEle.innerHTML = '';
+        achievementEle.innerHTML = '';
+
+        currentPageEle.innerHTML = currentPage;
+
+        renderResume(filteredResumes, currentPage);
+    }
+
+    // Displaying the details of the current resume on the page
+    function renderResume(filteredResumes, currentPage) {
+        if(totalPages == 0) {
             noResultEle.style.display = "flex";
+
             resumeheadingEle.style.visibility = "hidden";
             containerEle.style.visibility = "hidden";
             pipeEle.style.visibility = "hidden";
@@ -83,113 +137,67 @@ function filterResumes(resumesList) {
 
             currentPageEle.innerHTML = 0;
             totalPagesEle.innerHTML = 0;
+        } else {
+            noResultEle.style.display = "none";
+
+            resumeheadingEle.style.visibility = "visible";
+            containerEle.style.visibility = "visible";
+            pipeEle.style.visibility = "visible";
+
+            appNameELe.innerHTML = filteredResumes[currentPage - 1].basics.name;
+
+            appForEle.innerHTML = `Applied For: ${filteredResumes[currentPage - 1].basics.AppliedFor}`;
+
+            // Replace default image if present in the JSON file
+            // imgELe.innerHTML = `<img src="${filteredResumes[currentPage - 1].basics.image}" alt="Loading...">`
+
+            phoneEle.innerHTML = filteredResumes[currentPage - 1].basics.phone;
+
+            emailEle.innerHTML = filteredResumes[currentPage - 1].basics.email;
+
+            socialEle.href = filteredResumes[currentPage - 1].basics.profiles.url;
+
+            socialEle.innerHTML = filteredResumes[currentPage - 1].basics.profiles.network;
+
+            filteredResumes[currentPage - 1].skills.keywords.forEach(element => {
+                skillEle.innerHTML += `<li class="content">${element}</li>`;
+            });
+
+            filteredResumes[currentPage - 1].interests.hobbies.forEach(element => {
+                hobbyEle.innerHTML += `<li class="content">${element}</li>`;
+            });
+
+            companyNameEle.innerHTML = `<strong>Company Name:</strong> ${filteredResumes[currentPage - 1].work['Company Name']}`;
+
+            companyPositionEle.innerHTML = `<strong>Position:</strong> ${filteredResumes[currentPage - 1].work['Position']}`;
+
+            companyStartDateEle.innerHTML = `<strong>Start Date:</strong> ${filteredResumes[currentPage - 1].work['Start Date']}`;
+
+            companyEndDateEle.innerHTML = `<strong>End Date:</strong> ${filteredResumes[currentPage - 1].work['End Date']}`;
+
+            companySummaryEle.innerHTML = `<strong>Summary:</strong> ${filteredResumes[currentPage - 1].work['Summary']}`;
+
+            projectEle.innerHTML = `<strong>${filteredResumes[currentPage - 1].projects.name}:</strong> ${filteredResumes[currentPage - 1].projects.description}`;
+
+            ugEle.innerHTML = `<strong>UG:</strong> ${filteredResumes[currentPage - 1].education.UG.institute}, ${filteredResumes[currentPage - 1].education.UG.course}, ${filteredResumes[currentPage - 1].education.UG['Start Date']}, ${filteredResumes[currentPage - 1].education.UG['End Date']}, ${filteredResumes[currentPage - 1].education.UG.cgpa}`;
+
+            puEle.innerHTML = `<strong>PU:</strong> ${filteredResumes[currentPage - 1].education['Senior Secondary'].institute}, ${filteredResumes[currentPage - 1].education['Senior Secondary'].cgpa}`;
+
+            highSchoolEle.innerHTML = `<strong>PU:</strong> ${filteredResumes[currentPage - 1].education['High School'].institute}, ${filteredResumes[currentPage - 1].education['High School'].cgpa}`;
+
+            internNameEle.innerHTML = `<strong>Company Name:</strong> ${filteredResumes[currentPage - 1].Internship['Company Name']}`;
+
+            internPositionEle.innerHTML = `<strong>Position:</strong> ${filteredResumes[currentPage - 1].Internship['Position']}`;
+
+            internStartEle.innerHTML = `<strong>Start Date:</strong> ${filteredResumes[currentPage - 1].Internship['Start Date']}`;
+
+            internEndEle.innerHTML = `<strong>End Date:</strong> ${filteredResumes[currentPage - 1].Internship['End Date']}`;
+
+            internSummaryEle.innerHTML = `<strong>Summary:</strong> ${filteredResumes[currentPage - 1].Internship['Summary']}`;
+
+            filteredResumes[currentPage - 1].achievements.Summary.forEach(element => {
+                achievementEle.innerHTML += `<li>${element}</li>`;
+            });
         }
-    });
-}
-
-// Selecting a particular resume from the filtered resumes
-function selectResume(resumeArray) {
-    let firstResume = 0;
-    let lastResume = resumeArray.length - 1;
-    let currentResume = 0;
-
-    noResultEle.style.display = "none";
-    resumeheadingEle.style.visibility = "visible";
-    containerEle.style.visibility = "visible";
-    pipeEle.style.visibility = "visible";
-    previousBtnEle.style.visibility = "hidden";
-    nextBtnEle.style.visibility = "visible";
-    
-    currentPageEle.innerHTML = currentResume + 1;
-    totalPagesEle.innerHTML = lastResume + 1;
-
-    updateDetails(resumeArray, currentResume);
-
-    nextBtnEle.addEventListener("click", function() {
-        currentResume++;
-
-        skillEle.innerHTML = '';
-        hobbyEle.innerHTML = '';
-        achievementEle.innerHTML = '';
-
-        if(currentResume == lastResume) nextBtnEle.style.visibility = "hidden";
-        previousBtnEle.style.visibility = "visible";
-
-        currentPageEle.innerHTML = currentResume + 1;
-        
-        updateDetails(resumeArray, currentResume);
-    });
-
-    previousBtnEle.addEventListener("click", function() {
-        currentResume--;
-
-        skillEle.innerHTML = '';
-        hobbyEle.innerHTML = '';
-        achievementEle.innerHTML = '';
-
-        if(currentResume == firstResume) previousBtnEle.style.visibility = "hidden";
-        nextBtnEle.style.visibility = "visible";
-
-        currentPageEle.innerHTML = currentResume + 1;
-        
-        updateDetails(resumeArray, currentResume);
-    });
-}
-
-// Displaying the details of a particular resume on the page
-function updateDetails(resumesArray, resumeNo) {
-    appNameELe.innerHTML = resumesArray[resumeNo].basics.name;
-
-    appForEle.innerHTML = `Applied For: ${resumesArray[resumeNo].basics.AppliedFor}`;
-
-    // Replace default image if present in the JSON file
-    // imgELe.innerHTML = `<img src="${resumesArray[resumeNo].basics.image}" alt="Loading...">`
-
-    phoneEle.innerHTML = resumesArray[resumeNo].basics.phone;
-
-    emailEle.innerHTML = resumesArray[resumeNo].basics.email;
-
-    socialEle.href = resumesArray[resumeNo].basics.profiles.url;
-
-    socialEle.innerHTML = resumesArray[resumeNo].basics.profiles.network;
-
-    resumesArray[resumeNo].skills.keywords.forEach(element => {
-        skillEle.innerHTML += `<li class="content">${element}</li>`;
-    });
-
-    resumesArray[resumeNo].interests.hobbies.forEach(element => {
-        hobbyEle.innerHTML += `<li class="content">${element}</li>`;
-    });
-
-    companyNameEle.innerHTML = `<strong>Company Name:</strong> ${resumesArray[resumeNo].work['Company Name']}`;
-
-    companyPositionEle.innerHTML = `<strong>Position:</strong> ${resumesArray[resumeNo].work['Position']}`;
-
-    companyStartDateEle.innerHTML = `<strong>Start Date:</strong> ${resumesArray[resumeNo].work['Start Date']}`;
-
-    companyEndDateEle.innerHTML = `<strong>End Date:</strong> ${resumesArray[resumeNo].work['End Date']}`;
-
-    companySummaryEle.innerHTML = `<strong>Summary:</strong> ${resumesArray[resumeNo].work['Summary']}`;
-
-    projectEle.innerHTML = `<strong>${resumesArray[resumeNo].projects.name}:</strong> ${resumesArray[resumeNo].projects.description}`;
-
-    ugEle.innerHTML = `<strong>UG:</strong> ${resumesArray[resumeNo].education.UG.institute}, ${resumesArray[resumeNo].education.UG.course}, ${resumesArray[resumeNo].education.UG['Start Date']}, ${resumesArray[resumeNo].education.UG['End Date']}, ${resumesArray[resumeNo].education.UG.cgpa}`;
-
-    puEle.innerHTML = `<strong>PU:</strong> ${resumesArray[resumeNo].education['Senior Secondary'].institute}, ${resumesArray[resumeNo].education['Senior Secondary'].cgpa}`;
-
-    highSchoolEle.innerHTML = `<strong>PU:</strong> ${resumesArray[resumeNo].education['High School'].institute}, ${resumesArray[resumeNo].education['High School'].cgpa}`;
-
-    internNameEle.innerHTML = `<strong>Company Name:</strong> ${resumesArray[resumeNo].Internship['Company Name']}`;
-
-    internPositionEle.innerHTML = `<strong>Position:</strong> ${resumesArray[resumeNo].Internship['Position']}`;
-
-    internStartEle.innerHTML = `<strong>Start Date:</strong> ${resumesArray[resumeNo].Internship['Start Date']}`;
-
-    internEndEle.innerHTML = `<strong>End Date:</strong> ${resumesArray[resumeNo].Internship['End Date']}`;
-
-    internSummaryEle.innerHTML = `<strong>Summary:</strong> ${resumesArray[resumeNo].Internship['Summary']}`;
-
-    resumesArray[resumeNo].achievements.Summary.forEach(element => {
-        achievementEle.innerHTML += `<li>${element}</li>`;
-    });
+    }
 }
