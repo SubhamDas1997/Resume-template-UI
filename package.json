@@ -1,0 +1,23 @@
+{
+  "name": "subhamdas_advancedjavascript_gradedproj2",
+  "version": "1.0.0",
+  "description": "A resume template using HTML, CSS and Javascript.",
+  "main": "index.js",
+  "scripts": {
+    "start": "json-server --watch ./data/Data.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SubhamDas1997/SubhamDas_AdvancedJavascript_gradedproj2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SubhamDas1997/SubhamDas_AdvancedJavascript_gradedproj2/issues"
+  },
+  "homepage": "https://github.com/SubhamDas1997/SubhamDas_AdvancedJavascript_gradedproj2#readme",
+  "dependencies": {
+    "json-server": "^0.17.0"
+  }
+}
