@@ -4,7 +4,7 @@
   "description": "A resume template using HTML, CSS and Javascript.",
   "main": "index.js",
   "scripts": {
-    "start": "json-server --watch ./data/Data.json"
+    "start-server": "json-server --watch ./data/Data.json"
   },
   "repository": {
     "type": "git",
